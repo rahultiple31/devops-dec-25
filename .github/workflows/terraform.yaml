@@ -26,7 +26,7 @@ env:
   AWS_REGION: ap-south-1
 
 jobs:
-  terraform:
+  plan:
     name: Terraform Plan & Apply
     runs-on: ubuntu-latest
 
@@ -60,9 +60,32 @@ jobs:
         working-directory: ${{ env.TF_WORKING_DIR }}
         run: terraform plan -out=tfplan
 
+  apply:
+    name: Terraform Plan & Apply
+    runs-on: ubuntu-latest
+
+    # Map input → TF_WORKING_DIR
+    env:
+      TF_WORKING_DIR: ./${{ github.event.inputs.environment }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+
       # ----------------------------
-      # APPLY ONLY ON MAIN BRANCH
+      # Configure AWS OIDC
       # ----------------------------
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.OIDC }}
+          aws-region: ${{ env.AWS_REGION }}
+
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         working-directory: ${{ env.TF_WORKING_DIR }}
