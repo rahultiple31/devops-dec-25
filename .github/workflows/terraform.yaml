@@ -74,13 +74,11 @@ jobs:
         with:
           name: tfplan
           path: ${{ env.TF_WORKING_DIR }}/tfplan
-
   apply:
     name: Terraform Apply
     runs-on: ubuntu-latest
     needs: plan
 
-    # Apply only when explicitly selected
     if: |
       github.ref == 'refs/heads/main' &&
       (
@@ -89,7 +87,7 @@ jobs:
       )
 
     env:
-      TF_WORKING_DIR: ./${{ github.event.inputs.environment }}
+      TF_WORKING_DIR: ./${{ github.event.inputs.environment || 'dev' }}
 
     steps:
       - name: Checkout code
@@ -111,6 +109,10 @@ jobs:
         with:
           name: tfplan
           path: ${{ env.TF_WORKING_DIR }}
+
+      - name: Terraform Init
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        run: terraform init -input=false
 
       - name: Terraform Apply
         working-directory: ${{ env.TF_WORKING_DIR }}
