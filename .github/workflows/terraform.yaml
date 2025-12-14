@@ -44,22 +44,21 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Run Trivy IaC Scan (Template)
-        uses: aquasecurity/trivy-action@0.24.0
+      - uses: aquasecurity/trivy-action@0.22.0
         with:
-          scan-type: config
+          scan-type: 'fs'
           scan-ref: ${{ env.TF_WORKING_DIR }}
-          severity: HIGH,CRITICAL
-          format: template
-          template: "@/contrib/sarif.tpl"
-          output: trivy-terraform.sarif
-          exit-code: 1
+          format: 'template'
+          template: '@/contrib/html.tpl'
+          output: 'trivy-fs.html'
+          severity: 'HIGH,CRITICAL'
+          exit-code: '1'
 
-      - name: Upload Trivy Report
-        uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v4
+        if: always()
         with:
-          name: trivy-terraform-report
-          path: trivy-terraform.sarif
+          name: trivy-report
+          path: trivy-fs.html
 
 # -----------------------
 # Terraform Plan
