@@ -49,23 +49,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set Trivy Exit Code
-        id: trivy_exit
-        run: |
-          if [[ "${ENVIRONMENT}" == "dev" ]]; then
-            echo "exit_code=0" >> $GITHUB_OUTPUT
-          else
-            echo "exit_code=1" >> $GITHUB_OUTPUT
-          fi
-
       - name: Run Trivy IaC Scan
         uses: aquasecurity/trivy-action@0.24.0
         with:
           scan-type: config
           scan-ref: ${{ env.TF_WORKING_DIR }}
           severity: HIGH,CRITICAL
-          exit-code: ${{ steps.trivy_exit.outputs.exit_code }}
           format: table
+          exit-code: 1
 
 # -----------------------
 # Terraform Plan
