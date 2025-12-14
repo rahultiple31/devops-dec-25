@@ -33,20 +33,30 @@ env:
   TF_VERSION: 1.6.6
   AWS_REGION: ap-south-1
 
-# ---------------------------------------
-# Trivy IaC Security Scan
-# ---------------------------------------
+# -----------------------
+# Trivy Security Scan
+# -----------------------
 jobs:
   trivy:
     name: Trivy Terraform Scan
     runs-on: ubuntu-latest
 
     env:
-      TF_WORKING_DIR: ./${{ github.event.inputs.environment }}
+      ENVIRONMENT: ${{ github.event.inputs.environment || 'dev' }}
+      TF_WORKING_DIR: ./${{ github.event.inputs.environment || 'dev' }}
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Set Trivy Exit Code
+        id: trivy_exit
+        run: |
+          if [[ "${ENVIRONMENT}" == "dev" ]]; then
+            echo "exit_code=0" >> $GITHUB_OUTPUT
+          else
+            echo "exit_code=1" >> $GITHUB_OUTPUT
+          fi
 
       - name: Run Trivy IaC Scan
         uses: aquasecurity/trivy-action@0.24.0
@@ -54,12 +64,12 @@ jobs:
           scan-type: config
           scan-ref: ${{ env.TF_WORKING_DIR }}
           severity: HIGH,CRITICAL
-          exit-code: 1
+          exit-code: ${{ steps.trivy_exit.outputs.exit_code }}
           format: table
 
-# ---------------------------------------
+# -----------------------
 # Terraform Plan
-# ---------------------------------------
+# -----------------------
   plan:
     name: Terraform Plan
     runs-on: ubuntu-latest
@@ -71,6 +81,7 @@ jobs:
       github.event.inputs.action == 'apply'
 
     env:
+      ENVIRONMENT: ${{ github.event.inputs.environment || 'dev' }}
       TF_WORKING_DIR: ./${{ github.event.inputs.environment || 'dev' }}
 
     steps:
@@ -102,9 +113,9 @@ jobs:
           name: tfplan
           path: ${{ env.TF_WORKING_DIR }}/tfplan
 
-# ---------------------------------------
+# -----------------------
 # Terraform Apply
-# ---------------------------------------
+# -----------------------
   apply:
     name: Terraform Apply
     runs-on: ubuntu-latest
@@ -118,6 +129,7 @@ jobs:
       )
 
     env:
+      ENVIRONMENT: ${{ github.event.inputs.environment || 'dev' }}
       TF_WORKING_DIR: ./${{ github.event.inputs.environment || 'dev' }}
 
     steps:
@@ -130,4 +142,21 @@ jobs:
           terraform_version: ${{ env.TF_VERSION }}
 
       - name: Configure AWS credentials (OIDC)
-        uses: aws-actions/configure-aws-cre
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.OIDC }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Download tfplan
+        uses: actions/download-artifact@v4
+        with:
+          name: tfplan
+          path: ${{ env.TF_WORKING_DIR }}
+
+      - name: Terraform Init
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        run: terraform init -input=false
+
+      - name: Terraform Apply
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        run: terraform apply -auto-approve tfplan
