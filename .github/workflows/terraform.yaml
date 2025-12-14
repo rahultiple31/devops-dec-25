@@ -55,7 +55,7 @@ jobs:
           scan-type: config
           scan-ref: ${{ env.TF_WORKING_DIR }}
           severity: HIGH,CRITICAL
-          format: table
+          format: template
           exit-code: 1
 
 # -----------------------
