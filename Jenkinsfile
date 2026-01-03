@@ -11,8 +11,7 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                git branch: 'main',
-                    url: 'https://github.com/rahultiple31/devops-dec-25.git'
+                checkout scm
             }
         }
 
