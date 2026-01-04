@@ -18,7 +18,7 @@ pipeline {
                 sh '''
                     echo "Application name : $APP_NAME"
                     echo "Dev enviroment : $ENV_NAME"
-                    apt update
+                    touch /root/test
                 '''
             }
         }
