@@ -15,8 +15,9 @@ pipeline {
     
         stage('print enviroment variables') {
             steps {
-                echo "Application name : $APP_NAME"
-                echo "Dev enviroment : $ENV_NAME"
+                    echo "Application name : $APP_NAME"
+                    echo "Dev enviroment : $ENV_NAME"
+                    apt update
             }
         }
 
