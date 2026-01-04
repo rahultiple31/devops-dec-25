@@ -3,8 +3,8 @@ pipeline {
 
     parameters {
         string(
-            name: 'PERSON'
-            defaultValue: 'Mr Jenkins' 
+            name: 'PERSON',
+            defaultValue: 'Mr Jenkins', 
             description: 'Who should I say hello to?')
     }
 
@@ -24,7 +24,7 @@ pipeline {
             steps {
                     echo "Application name : $APP_NAME"
                     echo "Dev enviroment : $ENV_NAME"
-                    
+
                     echo "Hello ${params.PERSON}"
             }
         }
