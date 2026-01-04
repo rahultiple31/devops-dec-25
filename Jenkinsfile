@@ -8,8 +8,8 @@ pipeline {
             description: 'Who should I say hello to?')
 
         choice(name: 'CHOICE',
-        choices: ['Dev', 'Qa', 'Prod'],
-        description: 'Pick something')
+            choices: ['Dev', 'Qa', 'Prod'],
+            description: 'Pick something')
     }
 
     environment {
