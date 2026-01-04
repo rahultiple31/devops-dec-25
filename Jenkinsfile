@@ -6,6 +6,10 @@ pipeline {
             name: 'PERSON',
             defaultValue: 'Mr Jenkins', 
             description: 'Who should I say hello to?')
+
+        choice(name: 'CHOICE',
+        choices: ['Dev', 'Qa', 'Prod'],
+        description: 'Pick something')
     }
 
     environment {
@@ -26,6 +30,7 @@ pipeline {
                     echo "Dev enviroment : $ENV_NAME"
 
                     echo "Hello ${params.PERSON}"
+                    echo "Enviroment: ${params.CHOICE}"
             }
         }
 
