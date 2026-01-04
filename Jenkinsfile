@@ -15,11 +15,9 @@ pipeline {
     
         stage('print enviroment variables') {
             steps {
-                sh '''
                     echo "Application name : $APP_NAME"
                     echo "Dev enviroment : $ENV_NAME"
                     touch /tmp/test
-                '''
             }
         }
 
