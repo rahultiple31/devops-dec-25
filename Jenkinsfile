@@ -1,13 +1,22 @@
 pipeline {
     agent any
 
-    // set up tools configured in Jenkins global config
+    environment {
+        APP_NAME = "Web-applicetion"
+    }
+
     tools {
         jdk 'java11'
-        maven 'mvn'           // name of Maven installation in Jenkins
+        maven 'mvn'
     }
 
     stages {
+    
+        stage('print enviroment variables') {
+            steps {
+                echo "Application name : $APP_NAME"
+            }
+        }
 
         stage('Checkout') {
             steps {
