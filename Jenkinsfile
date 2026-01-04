@@ -1,6 +1,13 @@
 pipeline {
     agent any
 
+    parameters {
+        string(
+            name: 'PERSON'
+            defaultValue: 'Mr Jenkins' 
+            description: 'Who should I say hello to?')
+    }
+
     environment {
         APP_NAME = "Web-applicetion"
         ENV_NAME = "Dev"
@@ -17,7 +24,8 @@ pipeline {
             steps {
                     echo "Application name : $APP_NAME"
                     echo "Dev enviroment : $ENV_NAME"
-                    touch /tmp/test
+                    
+                    echo "Hello ${params.PERSON}"
             }
         }
 
