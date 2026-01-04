@@ -15,6 +15,7 @@ pipeline {
     environment {
         APP_NAME = "Web-applicetion"
         ENV_NAME = "Dev"
+        IMAGE_NAME = "web"
     }
 
     tools {
@@ -55,6 +56,15 @@ pipeline {
         stage('Test') {
             steps {
                 sh 'mvn test'
+            }
+        }
+
+        stage('Docker image build') {
+            steps {
+                sh '''
+                    docker build -t $IMAGE_NAME .
+                    docker images
+                '''
             }
         }
     }
