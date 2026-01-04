@@ -3,6 +3,7 @@ pipeline {
 
     environment {
         APP_NAME = "Web-applicetion"
+        ENV_NAME = "Dev"
     }
 
     tools {
@@ -15,6 +16,7 @@ pipeline {
         stage('print enviroment variables') {
             steps {
                 echo "Application name : $APP_NAME"
+                echo "Dev enviroment : $ENV_NAME"
             }
         }
 
