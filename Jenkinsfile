@@ -93,5 +93,25 @@ pipeline {
             }
         }
 
+        stage('Deployment') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'DOCKERHUB_LOGIN', passwordVariable: 'DOCKER_PASS', usernameVariable: 'DOCKER_USER')]) {
+                sh '''
+                    echo "Docker login"
+                    echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+
+                    echo "container create"
+                    docker run -itd -p 8080:8080 --name webapp $DOCKER_HUB_IMAGE_NAME
+
+                    echo "check docker running container"
+                    docker ps
+
+                    echo "docker logout"
+                    docker logout
+                '''
+                }
+            }
+        }
+
     }
 }
