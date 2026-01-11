@@ -17,7 +17,6 @@ pipeline {
         ENV_NAME = "Dev"
         IMAGE_NAME = "web"
         DOCKER_HUB_IMAGE_NAME = "rahultipledocker/dec-java:latest"
-        DOCKER_PASS = credentials('DOCKER_PD')
     }
 
     tools {
@@ -74,7 +73,6 @@ pipeline {
         stage('Docker push to dockerHub repository') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'DOCKERHUB_LOGIN', passwordVariable: 'DOCKER_PASS', usernameVariable: 'DOCKER_USER')]) {
-                }
                 sh '''
                     echo "docker delete image if exists"
                     docker rmi $DOCKER_HUB_IMAGE_NAME || true
@@ -91,6 +89,7 @@ pipeline {
                     echo "docker logout"
                     docker logout
                 '''
+                }
             }
         }
 
