@@ -74,6 +74,9 @@ pipeline {
         stage('Docker push to dockerHub repository') {
             steps {
                 sh '''
+                    echo "docker delete image if exists"
+                    docker rmi $DOCKER_HUB_IMAGE_NAME || true
+                    
                     echo "tag change"
                     docker tag $IMAGE_NAME $DOCKER_HUB_IMAGE_NAME
 
