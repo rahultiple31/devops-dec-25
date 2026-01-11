@@ -73,6 +73,8 @@ pipeline {
 
         stage('Docker push to dockerHub repository') {
             steps {
+                withCredentials([usernamePassword(credentialsId: 'DOCKERHUB_LOGIN', passwordVariable: 'DOCKER_PASS', usernameVariable: 'DOCKER_USER')]) {
+                }
                 sh '''
                     echo "docker delete image if exists"
                     docker rmi $DOCKER_HUB_IMAGE_NAME || true
@@ -80,9 +82,8 @@ pipeline {
                     echo "tag change"
                     docker tag $IMAGE_NAME $DOCKER_HUB_IMAGE_NAME
 
-                    withCredentials([usernameColonPassword(credentialsId: 'DOCKERHUB_LOGIN', variable: 'DOCKER')]) {
-                        sh 'echo "$DOCKER" | docker login --username ${DOCKER%%:*} --password-stdin'
-                    }
+                    echo "Docker login"
+                    echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
 
                     echo "docker push"
                     docker push $DOCKER_HUB_IMAGE_NAME
