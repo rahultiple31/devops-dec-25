@@ -16,6 +16,8 @@ pipeline {
         APP_NAME = "Web-applicetion"
         ENV_NAME = "Dev"
         IMAGE_NAME = "web"
+        DOCKER_HUB_IMAGE_NAME = "rahultipledocker/dec-java:latest"
+        DOCKER_PASS = credentials('DOCKER_PD')
     }
 
     tools {
@@ -62,10 +64,30 @@ pipeline {
         stage('Docker image build') {
             steps {
                 sh '''
+                    docker --version
                     docker build -t $IMAGE_NAME .
                     docker images
                 '''
             }
         }
+
+        stage('Docker push to dockerHub repository') {
+            steps {
+                sh '''
+                    echo "tag change"
+                    docker tag $IMAGE_NAME $DOCKER_HUB_IMAGE_NAME
+
+                    echo "docker hub login"
+                    docker login -u rahultipledocker -p $DOCKER_PASS
+
+                    echo "docker push"
+                    docker push $DOCKER_HUB_IMAGE_NAME
+
+                    echo "docker logout"
+                    docker logout
+                '''
+            }
+        }
+
     }
 }
