@@ -80,8 +80,9 @@ pipeline {
                     echo "tag change"
                     docker tag $IMAGE_NAME $DOCKER_HUB_IMAGE_NAME
 
-                    echo "docker hub login"
-                    echo "$DOCKER_PASS" | docker login -u rahultipledocker --password-stdin
+                    withCredentials([usernameColonPassword(credentialsId: 'DOCKERHUB_LOGIN', variable: 'DOCKER')]) {
+                        sh 'echo "$DOCKER" | docker login --username ${DOCKER%%:*} --password-stdin'
+                    }
 
                     echo "docker push"
                     docker push $DOCKER_HUB_IMAGE_NAME
