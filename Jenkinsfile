@@ -78,7 +78,7 @@ pipeline {
                     docker tag $IMAGE_NAME $DOCKER_HUB_IMAGE_NAME
 
                     echo "docker hub login"
-                    docker login -u rahultipledocker -p $DOCKER_PASS
+                    echo "$DOCKER_PASS" | docker login -u myuser --password-stdin
 
                     echo "docker push"
                     docker push $DOCKER_HUB_IMAGE_NAME
