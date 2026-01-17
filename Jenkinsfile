@@ -129,7 +129,7 @@ pipeline {
             )
         }
         failure {
-            echo 'This will run only if the pipeline fails',
+            echo 'This will run only if the pipeline fails'
             mail(
                 to: 'vaibhavpohankar30@gmail.com',
                 subject: "Failed Pipeline: ${currentBuild.fullDisplayName}",
