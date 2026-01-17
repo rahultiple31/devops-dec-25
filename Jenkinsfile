@@ -125,9 +125,11 @@ pipeline {
         }
         failure {
             echo 'This will run only if the pipeline fails',
-            mail to: 'vaibhavpohankar30@gmail.com',
-                 subject: "Failed Pipeline: ${currentBuild.fullDisplayName}",
-                 body: "Something is wrong with ${env.BUILD_URL}, ${env.JOB_NAME} and ${env.BUILD_NUMBER}"
+            mail(
+                to: 'vaibhavpohankar30@gmail.com',
+                subject: "Failed Pipeline: ${currentBuild.fullDisplayName}",
+                body: "Something is wrong with ${env.BUILD_URL}, ${env.JOB_NAME} and ${env.BUILD_NUMBER}"
+            )
         }
     }
 }
