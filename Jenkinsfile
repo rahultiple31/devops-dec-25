@@ -115,7 +115,19 @@ pipeline {
                 }
             }
         }
-
+    }
+    post {
+        always {
+            echo 'This will always run after the stages finish'
+        }
+        success {
+            echo 'This will run only if the pipeline succeeds'
+        }
+        failure {
+            echo 'This will run only if the pipeline fails',
+            mail to: 'vaibhavpohankar30@gmail.com',
+                 subject: "Failed Pipeline: ${currentBuild.fullDisplayName}",
+                 body: "Something is wrong with ${env.BUILD_URL}, ${env.JOB_NAME} and ${env.BUILD_NUMBER}"
+        }
     }
 }
-
