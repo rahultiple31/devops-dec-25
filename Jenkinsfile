@@ -122,8 +122,14 @@ pipeline {
         }
         success {
             echo 'This will run only if the pipeline succeeds'
+            mail(
+                to: 'vaibhavpohankar30@gmail.com',
+                subject: "Successful Pipeline: ${currentBuild.fullDisplayName}",
+                body: "Pipeline completed successfully."
+            )
         }
         failure {
+            echo 'This will run only if the pipeline fails',
             mail(
                 to: 'vaibhavpohankar30@gmail.com',
                 subject: "Failed Pipeline: ${currentBuild.fullDisplayName}",
